@@ -42,7 +42,13 @@ class MarcaController extends Controller
      */
     public function show($id)
     {
-        return $this->marca->find($id);
+        $marca = $this->marca->find($id);
+
+        if($marca === null){
+            return ['erro'=>'ERRO! O item buscado não existe.'];
+        }
+
+        return $marca;
     }
 
     /**
@@ -54,7 +60,12 @@ class MarcaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->marca->find($id)->update($request->all()); 
+        $marca = $this->marca->find($id);
+        if($marca === null){
+            return ['erro'=>'ERRO! O item buscado não existe.'];
+        }
+        $marca->update($request->all());
+        return $marca; 
     }
 
     /**
@@ -65,7 +76,12 @@ class MarcaController extends Controller
      */
     public function destroy($id)
     {
-        $this->marca->find($id)->delete();
+        $marca = $this->marca->find($id);
+        if($marca === null){
+            return ['erro'=>'ERRO! O item buscado não existe.'];
+        }
+        
+        $marca->delete();
 
         return ['msg' => 'Deleção concluída com sucesso!'];
     }
