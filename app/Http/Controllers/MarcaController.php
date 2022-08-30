@@ -30,15 +30,7 @@ class MarcaController extends Controller
      */
     public function store(Request $request)
     {
-        $regras = [
-            'nome' => 'required|unique:marcas',
-            'imagem' => 'required'
-        ];
-        $feedback = [
-            'unique' => 'O conteúdo do campo :attribute já existe',
-            'required' => 'O campo :attribute é necessário',
-        ];
-        $request->validate($regras, $feedback);
+        $request->validate($this->marca->rules(), $this->marca->feedback());
         
         $marca = $this->marca->create($request->all());
         
@@ -54,11 +46,10 @@ class MarcaController extends Controller
     public function show($id)
     {
         $marca = $this->marca->find($id);
-
         if($marca === null){
             return response()->json(['erro'=>'ERRO! O item buscado não existe.'], 404);
         }
-
+                
         return response()->json($marca, 200);
     }
 
@@ -75,6 +66,9 @@ class MarcaController extends Controller
         if($marca === null){
              return response()->json(['erro'=>'ERRO! O item buscado não existe.'], 404);
         }
+        
+        $request->validate($marca->rules(), $marca->feedback());
+
         $marca->update($request->all());
         return response()->json($marca, 200); 
     }
