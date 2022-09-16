@@ -14,7 +14,7 @@ class Marca extends Model
     public function rules(){
         return [
             'nome' => 'required|unique:marcas,nome,'.$this->id,
-            'imagem' => 'required'
+            'imagem' => 'required|file|mimes:png'
         ];
 
         /*
@@ -29,6 +29,7 @@ class Marca extends Model
         return [
             'unique' => 'O conteúdo do campo :attribute já existe',
             'required' => 'O campo :attribute é necessário',
+            'imagem.mimes' => 'Somente formato .png é aceito',
         ];
     }
 }
