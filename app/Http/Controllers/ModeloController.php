@@ -100,7 +100,15 @@ class ModeloController extends Controller
 
         $imagem = $request->file("imagem");
         $imagem_urn = $imagem->store('imagens/modelos', 'public');
+        
+        // altera o objeto com base nos parâmetros do array da requisição
+        $modelo->fill($request->all());
+        $modelo->imagem = $imagem_urn;
+        // tem a inteligencia de atualizar um registro caso o id esteja definido e
+        // de criar um novo registro caso não haja um id definido
+        $modelo->save(); 
 
+        /*
         $modelo->update([
             'marca_id' => $request->marca_id,
             'nome' => $request->nome,
@@ -110,6 +118,7 @@ class ModeloController extends Controller
             'air_bag' => $request->air_bag,
             'abs' => $request->abs,
         ]);
+        */
         return response()->json($modelo, 200); 
     }
 
