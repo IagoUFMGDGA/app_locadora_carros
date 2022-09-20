@@ -18,12 +18,20 @@ class ModeloController extends Controller
      */
     public function index(Request $request)
     {
+        if($request->has('attrib_marca')){
+            $attrib_marca = $request->attrib_marca;
+            $modelos = $this->modelo->with('marca:id,'.$attrib_marca);
+        }else{
+            $modelos = $this->modelo->with('marca');
+        }
+
         if($request->has('atributos')){
-            $modelos = $this->modelo->selectRaw($request->atributos)->with('marca')->get(); 
+            $atributos = $request->atributos;
+            $modelos = $modelos->selectRaw($atributos)->get(); 
             // é necessário que marca_id esteja no contexto da requisição, do contrário with não
             // conseguirá encontrar marca
         }else{
-            $modelos = $this->modelo->with('marca')->get();
+            $modelos = $modelos->get();
         }
         return  response()->json($modelos, 200);
     }
