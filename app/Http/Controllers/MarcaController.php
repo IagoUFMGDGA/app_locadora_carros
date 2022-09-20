@@ -21,7 +21,9 @@ class MarcaController extends Controller
     public function index()
     {
         
-        $marcas = $this->marca->all();
+        $marcas = $this->marca->with('modelos')->get();
+        // all() -> cria um obj de consulta e executa get() = retorna collection
+        // get() -> permite modificar a query antes de retornar a collection
         return  response()->json($marcas, 200);
     }
 
@@ -55,7 +57,7 @@ class MarcaController extends Controller
      */
     public function show($id)
     {
-        $marca = $this->marca->find($id);
+        $marca = $this->marca->with('modelos')->find($id);
         if($marca === null){
             return response()->json(['erro'=>'ERRO! O item buscado não existe.'], 404);
         }
@@ -85,7 +87,7 @@ class MarcaController extends Controller
             foreach ($marca->rules() as $input => $regra) {
                 if(array_key_exists($input, $request->all())){
                     $regrasDinamicas[$input] = $regra;
-                }    
+                }       
             }
             $request->validate($regrasDinamicas, $marca->feedback());
         }else{

@@ -30,4 +30,8 @@ class Modelo extends Model
             3)id do registro que o unique desconsiderará no seu teste
         */
     }
+    public function marca(){
+        // UM modelo pertence a UMA marca
+        return $this->belongsTo('App\Models\Marca');
+    }
 }

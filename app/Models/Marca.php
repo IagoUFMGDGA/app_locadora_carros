@@ -32,4 +32,9 @@ class Marca extends Model
             'imagem.mimes' => 'Somente formato .png é aceito',
         ];
     }
+
+    public function modelos(){
+        // UMA marca possui MUITOS modelos
+        return $this->hasMany('App\Models\Modelo');
+    }
 }
