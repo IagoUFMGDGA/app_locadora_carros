@@ -16,10 +16,16 @@ class ModeloController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-
-        return  response()->json($this->modelo->with('marca')->get(), 200);
+        if($request->has('atributos')){
+            $modelos = $this->modelo->selectRaw($request->atributos)->with('marca')->get(); 
+            // é necessário que marca_id esteja no contexto da requisição, do contrário with não
+            // conseguirá encontrar marca
+        }else{
+            $modelos = $this->modelo->with('marca')->get();
+        }
+        return  response()->json($modelos, 200);
     }
 
     /**
