@@ -18,12 +18,36 @@ class MarcaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        
-        $marcas = $this->marca->with('modelos')->get();
-        // all() -> cria um obj de consulta e executa get() = retorna collection
-        // get() -> permite modificar a query antes de retornar a collection
+        $marcas = array();
+
+        if($request->has('attrib_modelos')){
+            $attrib_modelos = $request->attrib_modelos;
+            $marcas = $this->marca->with('modelos:id,'.$attrib_modelos);
+        }else{
+            $marcas = $this->marca->with('modelos'); // query builder
+        }
+        if($request->has('filtro')){
+
+            $filtro = explode(';', $request->filtro);
+            
+            foreach($filtro as $key => $condicao){
+                $c = explode(':', $condicao);
+                $marcas = $marcas->where($c[0],$c[1],$c[2]);
+            }
+
+        }
+        if($request->has('atributos')){
+            $atributos = $request->atributos;
+            $marcas = $marcas->selectRaw($atributos)->get(); 
+            // é necessário que id esteja no contexto da requisição, do contrário with não
+            // conseguirá encontrar modelos
+        }else{
+            $marcas = $marcas->get();     
+            // all() -> cria um obj de consulta e executa get() = retorna collection
+            // get() -> permite modificar a query antes de retornar a collection
+        }
         return  response()->json($marcas, 200);
     }
 
