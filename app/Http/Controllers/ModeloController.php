@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Modelo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Repositories\ModeloRepository;
 
 class ModeloController extends Controller
 {
@@ -18,35 +19,25 @@ class ModeloController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->has('attrib_marca')){
-            $attrib_marca = $request->attrib_marca;
-            $modelos = $this->modelo->with('marca:id,'.$attrib_marca);
-        }else{
-            $modelos = $this->modelo->with('marca');
-        }
+        $ModeloRepository = new ModeloRepository($this->modelo);
         
-        if($request->has('filtro')){
-
-            $filtro = explode(';', $request->filtro);
-            
-            foreach($filtro as $key => $condicao){
-                $c = explode(':', $condicao);
-                $modelos = $modelos->where($c[0],$c[1],$c[2]);
-            }
-
-        }
-
-        if($request->has('atributos')){
-            $atributos = $request->atributos;
-            $modelos = $modelos->selectRaw($atributos)->get(); 
-            // é necessário que marca_id esteja no contexto da requisição, do contrário with não
-            // conseguirá encontrar marca
+        if($request->has('attrib_marca')){
+            $attrib_marca = 'marca:id,'.$request->attrib_marca;
+            $ModeloRepository->selectAtributosRegistrosRelacionados($attrib_marca); 
         }else{
-            $modelos = $modelos->get();
+            $ModeloRepository->selectAtributosRegistrosRelacionados('marca');
         }
-        return  response()->json($modelos, 200);
-    }
 
+        if($request->has('filtro')){
+            $ModeloRepository->filtro($request->filtro);
+        }
+       
+        if($request->has('atributos')){
+            $ModeloRepository->selectAtributos($request->atributos);
+        }
+        return  response()->json($ModeloRepository->getResultado(), 200);
+    }
+  
     /**
      * Store a newly created resource in storage.
      *

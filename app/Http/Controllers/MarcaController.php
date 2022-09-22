@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Marca;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Repositories\MarcaRepository;
 
 class MarcaController extends Controller
 {
@@ -20,35 +21,24 @@ class MarcaController extends Controller
      */
     public function index(Request $request)
     {
-        $marcas = array();
 
+        $marcaRepository = new MarcaRepository($this->marca);
+        
         if($request->has('attrib_modelos')){
-            $attrib_modelos = $request->attrib_modelos;
-            $marcas = $this->marca->with('modelos:id,'.$attrib_modelos);
+            $attrib_modelos = 'modelos:id,'.$request->attrib_modelos;
+            $marcaRepository->selectAtributosRegistrosRelacionados($attrib_modelos); 
         }else{
-            $marcas = $this->marca->with('modelos'); // query builder
+            $marcaRepository->selectAtributosRegistrosRelacionados('modelos');
         }
+
         if($request->has('filtro')){
-
-            $filtro = explode(';', $request->filtro);
-            
-            foreach($filtro as $key => $condicao){
-                $c = explode(':', $condicao);
-                $marcas = $marcas->where($c[0],$c[1],$c[2]);
-            }
-
+            $marcaRepository->filtro($request->filtro);
         }
+       
         if($request->has('atributos')){
-            $atributos = $request->atributos;
-            $marcas = $marcas->selectRaw($atributos)->get(); 
-            // é necessário que id esteja no contexto da requisição, do contrário with não
-            // conseguirá encontrar modelos
-        }else{
-            $marcas = $marcas->get();     
-            // all() -> cria um obj de consulta e executa get() = retorna collection
-            // get() -> permite modificar a query antes de retornar a collection
+            $marcaRepository->selectAtributos($request->atributos);
         }
-        return  response()->json($marcas, 200);
+        return  response()->json($marcaRepository->getResultado(), 200);
     }
 
     /**
