@@ -7,6 +7,8 @@
 
           <div class="card-body">
             <form method="POST" action="">
+              <input type="hidden" name="_token" :value="token_csrf" />
+
               <div class="form-group row">
                 <label
                   for="email"
@@ -81,4 +83,9 @@
 </template>
 
 <script>
+export default {
+  props: ["token_csrf"], // semelhante ao atributo vue data
+  // todas as propriedades tem o name convertido para caracteres minúsculos quando recebidas
+  // dentro do componente
+};
 </script>
