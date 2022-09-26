@@ -6,7 +6,7 @@
           <div class="card-header">Login (componente Vue)</div>
 
           <div class="card-body">
-            <form method="POST" action="">
+            <form method="POST" action="" @submit.prevent="login($event)">
               <input type="hidden" name="_token" :value="token_csrf" />
 
               <div class="form-group row">
@@ -27,6 +27,7 @@
                     required
                     autocomplete="email"
                     autofocus
+                    v-model="email"
                   />
                 </div>
               </div>
@@ -46,6 +47,7 @@
                     name="password"
                     required
                     autocomplete="current-password"
+                    v-model="password"
                   />
                 </div>
               </div>
@@ -85,7 +87,41 @@
 <script>
 export default {
   props: ["token_csrf"], // semelhante ao atributo vue data
-  // todas as propriedades tem o name convertido para caracteres minúsculos quando recebidas
-  // dentro do componente
+  /* todas as propriedades tem o name convertido para caracteres minúsculos quando recebidas dentro do componente */
+  data() {
+    return {
+      email: "",
+      password: "",
+    };
+  },
+  methods: {
+    login: function (e) {
+      const url = "http://localhost:8000/api/auth/login";
+      const configuracao = {
+        method: "post",
+        // convertendo o body para a formatação do encoding x-www-form-urlencoded
+        body: new URLSearchParams({
+          email: this.email,
+          password: this.password,
+        }),
+      };
+
+      // recurso js para executar requisições
+      fetch(url, configuracao)
+        // para recurar de forma assíncrona a resposta da requisição
+        .then((response) => response.json()) // convertendo a resposta para json
+        .then((data) => {
+          if (data.token) {
+            // adicionando o token jwt em um cookie no front end
+            /* token é o nome da chave. Sendo 'token' o laravel sabe que se trata de token de autorização */
+            /* SameSite é adicionado para fazer o cookie ser encaminhado por padrão nas próximas requisições HTTP*/
+            document.cookie = "token=" + data.token + ";SameSite=Lax";
+
+            // dando sequência no envio do form de autenticação por sessão
+            e.target.submit();
+          }
+        });
+    },
+  },
 };
 </script>
