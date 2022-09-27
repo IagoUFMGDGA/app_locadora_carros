@@ -41,6 +41,7 @@
               </div>
             </div>
           </template>
+
           <template v-slot:rodape>
             <button type="submit" class="btn btn-primary btn-sm float-right">
               Enviar
@@ -69,10 +70,51 @@
         <!-- fim do card de listagem de marcas -->
       </div>
     </div>
-    <modal-component
-      modal-id="modalMarca"
-      modal-title="Adicionar Marca"
-    ></modal-component>
+
+    <modal-component modal-id="modalMarca" modal-title="Adicionar Marca">
+      <template v-slot:conteudo>
+        <div class="form-group">
+          <input-container-component
+            label-for="novoNome"
+            label-text="ID"
+            id-help="novoNomeHelp"
+            help-text="Informe o nome da marca"
+          >
+            <input
+              type="text"
+              class="form-control"
+              id="novoNome"
+              aria-describedby="novoNomeHelp"
+              placeholder="Nome da marca"
+            />
+          </input-container-component>
+        </div>
+
+        <div class="form-group">
+          <input-container-component
+            label-for="imagem"
+            label-text="ID"
+            id-help="novoImagemHelp"
+            help-text="Selecione uma imagem no formato PNG"
+          >
+            <input
+              type="file"
+              class="form-control-file"
+              id="imagem"
+              aria-describedby="novoImagemHelp"
+              placeholder="Arquivo"
+            />
+          </input-container-component>
+        </div>
+      </template>
+
+      <template v-slot:rodape>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Fechar
+        </button>
+        <button type="button" class="btn btn-primary">Salvar alterações</button>
+      </template>
+    </modal-component>
   </div>
 </template>
 
