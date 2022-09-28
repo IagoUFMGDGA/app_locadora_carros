@@ -2426,7 +2426,47 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      urlBase: "http://localhost:8000/api/v1/marca",
+      nomeMarca: "",
+      arquivoImagem: [] // os inputs do tipo files são arrays de objetos pois podem receber mais de um arquivo
+
+    };
+  },
+  methods: {
+    carregarImagem: function carregarImagem(e) {
+      this.arquivoImagem = e.target.files; // forma de recuperar arquivos selecionados por um input file
+    },
+    salvar: function salvar() {
+      console.log(this.nomeMarca, this.arquivoImagem[0]); // criando formulário de modo programático
+
+      var formData = new FormData();
+      formData.append("nome", this.nomeMarca);
+      formData.append("imagem", this.arquivoImagem[0]);
+      var config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          //determinando o body da requisição como sendo do tipo de encoding form-data
+          Accept: "application/json"
+        }
+      }; // fazendo uma requisição para o back da aplicação
+
+      axios.post(this.urlBase, formData, config) // recuperando retorno de modo assíncrono quando estiver pronto
+      .then(function (response) {
+        console.log(response);
+      }) // captura os erros da requisição
+      ["catch"](function (errors) {
+        console.log(errors);
+      });
+    }
+  }
+});
 
 /***/ }),
 
@@ -39048,12 +39088,29 @@ var render = function () {
                       },
                       [
                         _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.nomeMarca,
+                              expression: "nomeMarca",
+                            },
+                          ],
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
                             id: "novoNome",
                             "aria-describedby": "novoNomeHelp",
                             placeholder: "Nome da marca",
+                          },
+                          domProps: { value: _vm.nomeMarca },
+                          on: {
+                            input: function ($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.nomeMarca = $event.target.value
+                            },
                           },
                         }),
                       ]
@@ -39085,6 +39142,11 @@ var render = function () {
                             "aria-describedby": "novoImagemHelp",
                             placeholder: "Arquivo",
                           },
+                          on: {
+                            change: function ($event) {
+                              return _vm.carregarImagem($event)
+                            },
+                          },
                         }),
                       ]
                     ),
@@ -39110,8 +39172,16 @@ var render = function () {
                 _vm._v(" "),
                 _c(
                   "button",
-                  { staticClass: "btn btn-primary", attrs: { type: "button" } },
-                  [_vm._v("Salvar alterações")]
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function ($event) {
+                        return _vm.salvar()
+                      },
+                    },
+                  },
+                  [_vm._v("\n        Salvar alterações\n      ")]
                 ),
               ]
             },

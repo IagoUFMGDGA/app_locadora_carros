@@ -86,6 +86,7 @@
               id="novoNome"
               aria-describedby="novoNomeHelp"
               placeholder="Nome da marca"
+              v-model="nomeMarca"
             />
           </input-container-component>
         </div>
@@ -103,6 +104,7 @@
               id="imagem"
               aria-describedby="novoImagemHelp"
               placeholder="Arquivo"
+              @change="carregarImagem($event)"
             />
           </input-container-component>
         </div>
@@ -112,12 +114,53 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">
           Fechar
         </button>
-        <button type="button" class="btn btn-primary">Salvar alterações</button>
+        <button type="button" class="btn btn-primary" @click="salvar()">
+          Salvar alterações
+        </button>
       </template>
     </modal-component>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      urlBase: "http://localhost:8000/api/v1/marca",
+      nomeMarca: "",
+      arquivoImagem: [], // os inputs do tipo files são arrays de objetos pois podem receber mais de um arquivo
+    };
+  },
+  methods: {
+    carregarImagem: function (e) {
+      this.arquivoImagem = e.target.files; // forma de recuperar arquivos selecionados por um input file
+    },
+    salvar: function () {
+      console.log(this.nomeMarca, this.arquivoImagem[0]);
+
+      // criando formulário de modo programático
+      let formData = new FormData();
+      formData.append("nome", this.nomeMarca);
+      formData.append("imagem", this.arquivoImagem[0]);
+
+      let config = {
+        headers: {
+          "Content-Type": "multipart/form-data", //determinando o body da requisição como sendo do tipo de encoding form-data
+          Accept: "application/json",
+        },
+      };
+      // fazendo uma requisição para o back da aplicação
+      axios
+        .post(this.urlBase, formData, config)
+        // recuperando retorno de modo assíncrono quando estiver pronto
+        .then((response) => {
+          console.log(response);
+        })
+        // captura os erros da requisição
+        .catch((errors) => {
+          console.log(errors);
+        });
+    },
+  },
+};
 </script>
