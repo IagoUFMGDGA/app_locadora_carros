@@ -2439,13 +2439,22 @@ __webpack_require__.r(__webpack_exports__);
 
     };
   },
+  computed: {
+    token: function token() {
+      var token = document.cookie.split(";").find(function (indice) {
+        return indice.startsWith("token=");
+      });
+      token = token.split("=")[1];
+      token = "Bearer " + token;
+      return token;
+    }
+  },
   methods: {
     carregarImagem: function carregarImagem(e) {
       this.arquivoImagem = e.target.files; // forma de recuperar arquivos selecionados por um input file
     },
     salvar: function salvar() {
-      console.log(this.nomeMarca, this.arquivoImagem[0]); // criando formulário de modo programático
-
+      // criando formulário de modo programático
       var formData = new FormData();
       formData.append("nome", this.nomeMarca);
       formData.append("imagem", this.arquivoImagem[0]);
@@ -2453,7 +2462,8 @@ __webpack_require__.r(__webpack_exports__);
         headers: {
           "Content-Type": "multipart/form-data",
           //determinando o body da requisição como sendo do tipo de encoding form-data
-          Accept: "application/json"
+          Accept: "application/json",
+          Authorization: this.token
         }
       }; // fazendo uma requisição para o back da aplicação
 

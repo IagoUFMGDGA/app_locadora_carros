@@ -131,13 +131,24 @@ export default {
       arquivoImagem: [], // os inputs do tipo files são arrays de objetos pois podem receber mais de um arquivo
     };
   },
+  computed: {
+    token() {
+      let token = document.cookie
+        .split(";")
+        .find((indice) => indice.startsWith("token="));
+
+      token = token.split("=")[1];
+
+      token = "Bearer " + token;
+      return token;
+    },
+  },
   methods: {
     carregarImagem: function (e) {
       this.arquivoImagem = e.target.files; // forma de recuperar arquivos selecionados por um input file
     },
-    salvar: function () {
-      console.log(this.nomeMarca, this.arquivoImagem[0]);
 
+    salvar: function () {
       // criando formulário de modo programático
       let formData = new FormData();
       formData.append("nome", this.nomeMarca);
@@ -147,6 +158,7 @@ export default {
         headers: {
           "Content-Type": "multipart/form-data", //determinando o body da requisição como sendo do tipo de encoding form-data
           Accept: "application/json",
+          Authorization: this.token,
         },
       };
       // fazendo uma requisição para o back da aplicação
