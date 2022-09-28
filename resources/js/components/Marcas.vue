@@ -72,6 +72,13 @@
     </div>
 
     <modal-component modal-id="modalMarca" modal-title="Adicionar Marca">
+      <template v-slot:alertas>
+        <alert-component
+          tipo="success"
+          alert-text="Concluído"
+        ></alert-component>
+      </template>
+
       <template v-slot:conteudo>
         <div class="form-group">
           <input-container-component
