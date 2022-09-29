@@ -75,7 +75,16 @@
       <template v-slot:alertas>
         <alert-component
           tipo="success"
-          alert-text="Concluído"
+          alert-text="Adicionado"
+          v-if="transacaoStatus == 'Adicionado'"
+          :detalhes="transacaoDetalhes"
+        ></alert-component>
+
+        <alert-component
+          tipo="danger"
+          alert-text="Ocorreu algum erro"
+          v-if="transacaoStatus == 'Erro'"
+          :detalhes="transacaoDetalhes"
         ></alert-component>
       </template>
 
@@ -136,6 +145,8 @@ export default {
       urlBase: "http://localhost:8000/api/v1/marca",
       nomeMarca: "",
       arquivoImagem: [], // os inputs do tipo files são arrays de objetos pois podem receber mais de um arquivo
+      transacaoStatus: "",
+      transacaoDetalhes: "",
     };
   },
   computed: {
@@ -173,10 +184,15 @@ export default {
         .post(this.urlBase, formData, config)
         // recuperando retorno de modo assíncrono quando estiver pronto
         .then((response) => {
+          this.transacaoStatus = "Adicionado";
+          // a estrutura do response é igual tanto no caso do sucesso quanto no erro. Porem o erro tem um nível a mais
+          this.transacaoDetalhes = response;
           console.log(response);
         })
         // captura os erros da requisição
         .catch((errors) => {
+          this.transacaoStatus = "Erro";
+          this.transacaoDetalhes = errors.response;
           console.log(errors);
         });
     },
