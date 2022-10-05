@@ -151,7 +151,7 @@ export default {
       arquivoImagem: [], // os inputs do tipo files são arrays de objetos pois podem receber mais de um arquivo
       transacaoStatus: "",
       transacaoDetalhes: {},
-      marcas = []
+      marcas: [],
     };
   },
   computed: {
@@ -172,6 +172,7 @@ export default {
         .get(this.urlBase)
         .then((response) => {
           this.marcas = response.data;
+          console.log(this.marcas);
         })
         .catch((errors) => {
           console.log(errors);
