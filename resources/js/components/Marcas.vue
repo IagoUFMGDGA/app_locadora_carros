@@ -135,6 +135,7 @@
         </button>
       </template>
     </modal-component>
+    <button type="button" @click="carregarLista()">Obter Dados</button>
   </div>
 </template>
 
@@ -162,6 +163,16 @@ export default {
     },
   },
   methods: {
+    carregarLista: function () {
+      axios
+        .get(this.urlBase)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((errors) => {
+          console.log(errors);
+        });
+    },
     carregarImagem: function (e) {
       this.arquivoImagem = e.target.files; // forma de recuperar arquivos selecionados por um input file
     },
