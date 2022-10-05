@@ -146,7 +146,7 @@ export default {
       nomeMarca: "",
       arquivoImagem: [], // os inputs do tipo files são arrays de objetos pois podem receber mais de um arquivo
       transacaoStatus: "",
-      transacaoDetalhes: "",
+      transacaoDetalhes: {},
     };
   },
   computed: {
@@ -186,13 +186,18 @@ export default {
         .then((response) => {
           this.transacaoStatus = "Adicionado";
           // a estrutura do response é igual tanto no caso do sucesso quanto no erro. Porem o erro tem um nível a mais
-          this.transacaoDetalhes = response;
+          this.transacaoDetalhes = {
+            message: "ID do registro: " + response.data.id,
+          };
           console.log(response);
         })
         // captura os erros da requisição
         .catch((errors) => {
           this.transacaoStatus = "Erro";
-          this.transacaoDetalhes = errors.response;
+          this.transacaoDetalhes = {
+            mensagem: errors.response.data.message,
+            dados: errors.response.data.errors,
+          };
           console.log(errors);
         });
     },
