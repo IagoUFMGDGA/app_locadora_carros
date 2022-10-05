@@ -23,7 +23,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(
     [
-        'middlare'=>'auth'
+        'middleware'=>'auth'
     ],
     function (){
         Route::get('/marcas', function (){
@@ -31,3 +31,8 @@ Route::group(
         })->name('marcas');
     }
 );
+
+
+
+    
+    
