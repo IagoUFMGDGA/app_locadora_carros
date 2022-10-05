@@ -135,12 +135,15 @@
         </button>
       </template>
     </modal-component>
-    <button type="button" @click="carregarLista()">Obter Dados</button>
   </div>
 </template>
 
 <script>
 export default {
+  // executa quanto o elemento é carregado
+  mounted() {
+    this.carregarLista();
+  },
   data() {
     return {
       urlBase: "http://localhost:8000/api/v1/marca",
@@ -148,6 +151,7 @@ export default {
       arquivoImagem: [], // os inputs do tipo files são arrays de objetos pois podem receber mais de um arquivo
       transacaoStatus: "",
       transacaoDetalhes: {},
+      marcas = []
     };
   },
   computed: {
@@ -167,7 +171,7 @@ export default {
       axios
         .get(this.urlBase)
         .then((response) => {
-          console.log(response);
+          this.marcas = response.data;
         })
         .catch((errors) => {
           console.log(errors);
