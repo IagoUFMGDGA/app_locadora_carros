@@ -53,10 +53,11 @@ class CreateMedVoltInvoicesTable extends Migration
             $table->unsignedInteger('demandaReativaHP');
             $table->decimal('demandaReativaHFPCusto',11,2);
             $table->decimal('demandaReativaHPCusto',11,2);
-            $table->date('data');
+            $table->date('refDate');
+            $table->date('readDate');
             $table->unsignedInteger('building_id');
             
-            $table->foreing('building_id')->references('id')->on('buildings');
+            $table->foreign('building_id')->references('id')->on('buildings');
         });
     }
 

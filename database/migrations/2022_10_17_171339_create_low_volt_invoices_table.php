@@ -29,7 +29,8 @@ class CreateLowVoltInvoicesTable extends Migration
             $table->decimal('correcoesCustos',11,2);
             $table->unsignedInteger('energiaBaixaTensaokWh');
             $table->decimal('energiaBaixaTensaoCusto', 11, 2);
-            $table->date('data');
+            $table->date('refDate');
+            $table->date('readDate');
             $table->unsignedInteger('building_id');
             
             $table->foreign('building_id')->references('id')->on('buildings');

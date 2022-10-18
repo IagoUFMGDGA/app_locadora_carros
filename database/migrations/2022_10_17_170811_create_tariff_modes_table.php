@@ -14,7 +14,7 @@ class CreateTariffModesTable extends Migration
     public function up()
     {
         Schema::create('tariff_modes', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedInteger('id')->autoIncrement();
             $table->timestamps();
             $table->string('descricao',30);
         });

@@ -16,7 +16,8 @@ class CreateBuildingsTable extends Migration
         // installationType === tariffModality
         // ['icex','icb','eba','ica','igc','esc. veterinaria', 'fae', 'fac. medicina', 'mnhjb', 'pç de serviços', 'demai', 'esc. engenharia', 'direito' ]
         Schema::create('buildings', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedInteger('id')->autoIncrement();
+            $table->timestamps();
             $table->enum('unityType', ['acadêmica','administrativa']);
             $table->enum('voltage', ['média','baixa']);
             $table->char('cep',9);
@@ -28,13 +29,15 @@ class CreateBuildingsTable extends Migration
             $table->string('numero', 25);
             $table->string('complemento', 45);
             $table->string('bairro', 45);
+            $table->unsignedInteger('tariffFlag_id');
             $table->unsignedInteger('tariffMode_id');
             $table->unsignedInteger('campu_id');
             $table->unsignedInteger('aggroupment_id');
             
-            $table->foreign('aggroupment_id')->references('id')->on('aggroupments');
-            $table->foreign('tariffMode_id')->references('id')->on('tariffModes');
+            $table->foreign('tariffFlag_id')->references('id')->on('tariff_flags');
+            $table->foreign('tariffMode_id')->references('id')->on('tariff_modes');
             $table->foreign('campu_id')->references('id')->on('campus');
+            $table->foreign('aggroupment_id')->references('id')->on('aggroupments');
         });
     }
 

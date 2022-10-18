@@ -14,7 +14,7 @@ class CreateCampusTable extends Migration
     public function up()
     {
         Schema::create('campus', function (Blueprint $table) {
-            $table->id();
+            $table->unsignedInteger('id')->autoIncrement();
             $table->timestamps();
             $table->string('descricao',30);
         });

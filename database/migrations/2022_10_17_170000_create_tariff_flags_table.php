@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAggroupmentsTable extends Migration
+class CreateTariffFlagsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class CreateAggroupmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('aggroupments', function (Blueprint $table) {
-            $table->id();
+        Schema::create('tariff_flags', function (Blueprint $table) {
+            $table->unsignedInteger('id')->autoIncrement();
             $table->timestamps();
             $table->string('descricao',30);
         });
@@ -27,6 +27,6 @@ class CreateAggroupmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('aggroupments');
+        Schema::dropIfExists('tariff_flags');
     }
 }
